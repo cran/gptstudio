@@ -6,12 +6,14 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+maturing](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/gptstudio)](https://CRAN.R-project.org/package=gptstudio)
 [![Codecov test
 coverage](https://codecov.io/gh/MichelNivard/gptstudio/branch/main/graph/badge.svg)](https://app.codecov.io/gh/MichelNivard/gptstudio?branch=main)
 [![R-CMD-check](https://github.com/MichelNivard/gptstudio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MichelNivard/gptstudio/actions/workflows/R-CMD-check.yaml)
+[![CRAN RStudio mirror
+downloads](http://cranlogs.r-pkg.org/badges/gptstudio)](https://www.r-pkg.org:443/pkg/gptstudio)
 <!-- badges: end -->
 
 The goal of gptstudio is for R programmers to easily incorporate use of
@@ -122,18 +124,25 @@ Some examples of use.
 
 1.  **Addins \> GPTSTUDIO \> ChatGPT**
 2.  Type your question.
-3.  Click “Chat”
+3.  Click “Send” button
 4.  Ask more questions
+5.  Copy and try code
 
-<video src="https://user-images.githubusercontent.com/6314313/225774512-bc0b0296-51c6-44a7-b665-e906610bed06.mov" controls="controls" muted="muted" class="d-block rounded-bottom-2 width-fit" style="max-height:640px;">
+<video src="https://user-images.githubusercontent.com/19418298/239023191-ee6597fd-1447-43c7-b817-a5562173f067.mp4" data-canonical-src="https://user-images.githubusercontent.com/19418298/239023191-ee6597fd-1447-43c7-b817-a5562173f067.mp4" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
 </video>
+
+The ChatGPT addin supports internationalization. You can set the
+“GPTSTUDIO_LANGUAGE” environmental variable to the language of your
+preference (i.e. `GPTSTUDIO_LANGUAGE="es"` for spanish). See the full
+list of supported languages in the translation file
+(`"inst/translations/translation.json"`).
 
 ### Provide your own instructions in R, R Markdown, or Quarto files
 
 **Addins \> GPTSTUDIO \> ChatGPT in Source:** Apply any edit what YOU
 desire or can dream up to a selection of code or text.
 
-<video src="https://user-images.githubusercontent.com/6314313/225774578-72e4e966-a740-4afc-beca-1ac25abb504c.mov" controls="controls" muted="muted" class="d-block rounded-bottom-2 width-fit" style="max-height:640px;">
+<video src="https://user-images.githubusercontent.com/6314313/225774578-72e4e966-a740-4afc-beca-1ac25abb504c.mov" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
 </video>
 
 ### Spelling ang grammar check

@@ -14,9 +14,13 @@
 #'
 #' @examples
 #' # Call the function with an API key
-#' \dontrun{check_api_connection("my_api_key")}
+#' \dontrun{
+#' check_api_connection("my_api_key")
+#' }
 #' # Call the function with an API key and avoid updating the API key
-#' \dontrun{check_api_connection("my_api_key", update_api = FALSE)}
+#' \dontrun{
+#' check_api_connection("my_api_key", update_api = FALSE)
+#' }
 check_api_connection <- function(api_key, update_api = TRUE, verbose = FALSE) {
   if (!check_api_key(api_key, update_api)) {
     invisible()
@@ -64,9 +68,13 @@ check_api_connection <- function(api_key, update_api = TRUE, verbose = FALSE) {
 #'
 #' @examples
 #' # Call the function with an API key
-#' \dontrun{check_api_key("my_api_key")}
+#' \dontrun{
+#' check_api_key("my_api_key")
+#' }
 #' # Call the function with an API key and avoid updating the API key
-#' \dontrun{check_api_key("my_api_key", update_api = FALSE)}
+#' \dontrun{
+#' check_api_key("my_api_key", update_api = FALSE)
+#' }
 check_api_key <- function(api_key, update_api = TRUE) {
   if (api_key == "") {
     cli_alert_warning("OPENAI_API_KEY is not set.")
@@ -105,7 +113,9 @@ check_api_key <- function(api_key, update_api = TRUE) {
 #'
 #' @examples
 #' # Call the function to check the API key
-#' \dontrun{check_api()}
+#' \dontrun{
+#' check_api()
+#' }
 check_api <- function() {
   api_key <- Sys.getenv("OPENAI_API_KEY")
   valid_api <- getOption("gptstudio.valid_api")
@@ -121,11 +131,10 @@ check_api <- function() {
 }
 
 simple_api_check <- function(api_key = Sys.getenv("OPENAI_API_KEY")) {
-  response <- httr::GET(
-    "https://api.openai.com/v1/models",
-    httr::add_headers(Authorization = paste0("Bearer ", api_key))
-  )
-  httr::status_code(response)
+  request_base(task = "models", token = api_key) %>%
+    httr2::req_error(is_error = \(resp) FALSE) %>%
+    httr2::req_perform() %>%
+    httr2::resp_status()
 }
 
 set_openai_api_key <- function() {

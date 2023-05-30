@@ -9,10 +9,7 @@
       [1] "system"
       
       [[1]][[1]]$content
-      You are a helpful chat bot that answers questions for an R
-      programmer working in the RStudio IDE. TThey consider themselves
-      to be a beginner R programmer. Provide answers with their skill
-      level in mind.
+      You are a helpful chat bot that answers questions for an R programmer working in the RStudio IDE. They consider themselves to be a beginner R programmer. Provide answers with their skill level in mind.  
       
       
       [[1]][[2]]
@@ -29,11 +26,15 @@
       [1] "system"
       
       [[2]]$content
-      [1] "Life's meaning is 42."
+      [1] "The sum of 2 and 2 is 4."
       
       [[2]]$choices
-      [[2]]$choices$message.content
-      [1] "The meaning of life is 42."
+      [[2]]$choices[[1]]
+      [[2]]$choices[[1]]$message
+      [[2]]$choices[[1]]$message$content
+      [1] "The sum of 2 and 2 is 4."
+      
+      
       
       
       
@@ -49,10 +50,7 @@
       [1] "system"
       
       [[1]][[1]]$content
-      You are a helpful chat bot that answers questions for an R
-      programmer working in the RStudio IDE. TThey consider themselves
-      to be a beginner R programmer. Provide answers with their skill
-      level in mind.
+      You are a helpful chat bot that answers questions for an R programmer working in the RStudio IDE. They consider themselves to be a beginner R programmer. Provide answers with their skill level in mind.  
       
       
       [[1]][[2]]
@@ -69,11 +67,15 @@
       [1] "system"
       
       [[2]]$content
-      [1] "Life's meaning is 42."
+      [1] "The sum of 2 and 2 is 4."
       
       [[2]]$choices
-      [[2]]$choices$message.content
-      [1] "The meaning of life is 42."
+      [[2]]$choices[[1]]
+      [[2]]$choices[[1]]$message
+      [[2]]$choices[[1]]$message$content
+      [1] "The sum of 2 and 2 is 4."
+      
+      
       
       
       
