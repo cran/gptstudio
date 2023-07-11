@@ -8,26 +8,25 @@
 #'
 mod_app_ui <- function(id, ide_colors = get_ide_theme_info()) {
   ns <- NS(id)
-
   translator <- create_translator(language = getOption("gptstudio.language"))
-
-  bslib::page_fluid(
-    theme = create_chat_app_theme(ide_colors),
-    title = "ChatGPT from gptstudio",
-    class = "vh-100 p-3 m-0",
-    html_dependencies(),
-    div(
-      class = "row justify-content-center h-100",
+  tagList(
+    waiter::use_waiter(),
+    bslib::page_fluid(
+      theme = create_chat_app_theme(ide_colors),
+      title = "ChatGPT from gptstudio",
+      class = "vh-100 p-3 m-0",
+      html_dependencies(),
       div(
-        class = "col h-100",
-        style = htmltools::css(`max-width` = "800px"),
-        mod_chat_ui(ns("chat"), translator)
+        class = "row justify-content-center h-100",
+        div(
+          class = "col h-100",
+          style = htmltools::css(`max-width` = "800px"),
+          mod_chat_ui(ns("chat"), translator)
+        )
       )
     )
   )
 }
-
-
 
 #' App Server
 #'
@@ -111,7 +110,7 @@ get_ide_theme_info <- function() {
 html_dependencies <- function() {
   htmltools::htmlDependency(
     name = "gptstudio-assets", version = "0.2.0",
-    package = methods::getPackageName(),
+    package = "gptstudio",
     src = "assets",
     script = c("js/copyToClipboard.js", "js/shiftEnter.js"),
     stylesheet = c("css/mod_app.css")
@@ -121,7 +120,7 @@ html_dependencies <- function() {
 #' Internationalization for the ChatGPT addin
 #'
 #' The language can be set via `options("gptstudio.language" = "<language>")`
-#' (defaults to "en") or the "GPTSTUDIO_LANGUAGE" environment variable.
+#' (defaults to "en").
 #'
 #' @param language The language to be found in the translation JSON file.
 #'
@@ -130,7 +129,7 @@ create_translator <- function(language = getOption("gptstudio.language")) {
   translator  <- shiny.i18n::Translator$new(translation_json_path = system.file("translations/translation.json", package = "gptstudio"))
   supported_languages <- translator$get_languages()
 
-  if (! language %in% supported_languages) {
+  if (!language %in% supported_languages) {
     cli::cli_abort("Language {.val {language}} is not supported. Must be one of {.val {supported_languages}}")
   }
 

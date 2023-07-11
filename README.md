@@ -86,35 +86,46 @@ text that should remain confidential.**
 
 3.  Set the API key up in Rstudio
 
-### Setting OpenAI API Key
+### Configuring OpenAI API Key
 
-By default, API calls will look for `OPENAI_API_KEY` environment
-variable. If you want to set a global environment variable, you can use
-the following command, where `"<APIKEY>"` should be replaced with your
-actual key:
+To interact with the OpenAI API, it’s required to have a valid
+`OPENAI_API_KEY` environment variable. Here are the steps to configure
+it.
+
+You can establish this environment variable globally by including it in
+your project’s .Renviron file. This approach ensures that the
+environment variable persists across all sessions as the Shiny app runs
+in the background.
+
+Here is a set of commands to open the .Renviron file for modification:
+
+``` r
+require(usethis)
+edit_r_environ()
+```
+
+If you wish to set the variable temporarily for a single session, use
+this command, substituting `"<APIKEY>"` with your actual OpenAI API key:
 
 ``` r
 Sys.setenv(OPENAI_API_KEY = "<APIKEY>")
 ```
 
-Otherwise, you can add the key to the .Renviron file of the project. The
-following commands will open .Renviron for editing:
-
-``` r
-require(usethis)
-edit_r_environ(scope = "project")
-```
-
-You can add the following line to .Renviron (again, replace `"<APIKEY>"`
-with your actual key):
+For a persistent setting that loads every time you launch this project,
+add the following line to .Renviron, replacing `"<APIKEY>"` with your
+actual API key:
 
 ``` bash
-OPENAI_API_KEY= "<APIKEY>")
+OPENAI_API_KEY="<APIKEY>"
 ```
 
-This now set the API key every time you start up this particular
-project. Note: If you are using GitHub/Gitlab, do not forget to add
-.Renviron to .gitignore!
+**Caution:** If you’re using version control systems like GitHub or
+GitLab, remember to include .Renviron in your .gitignore file to prevent
+exposing your API key!
+
+**Important Note:** OpenAI API will not function without valid payment
+details entered into your OpenAI account. This is a restriction imposed
+by OpenAI and is unrelated to this package.
 
 ## Usage
 
@@ -122,13 +133,13 @@ Some examples of use.
 
 ### ChatGPT in RStudio
 
-1.  **Addins \> GPTSTUDIO \> ChatGPT**
+1.  **Addins \> gptstudio \> ChatGPT**
 2.  Type your question.
-3.  Click “Send” button
+3.  Click “Send” button or press “Enter”
 4.  Ask more questions
 5.  Copy and try code
 
-<video src="https://user-images.githubusercontent.com/19418298/239023191-ee6597fd-1447-43c7-b817-a5562173f067.mp4" data-canonical-src="https://user-images.githubusercontent.com/19418298/239023191-ee6597fd-1447-43c7-b817-a5562173f067.mp4" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
+<video src="https://user-images.githubusercontent.com/6314313/252512856-7f677852-f2c8-4d7c-a2b6-ca909caaa142.mov" data-canonical-src="https://user-images.githubusercontent.com/6314313/252512856-7f677852-f2c8-4d7c-a2b6-ca909caaa142.mov" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
 </video>
 
 The ChatGPT addin supports internationalization. You can set the
@@ -136,6 +147,27 @@ The ChatGPT addin supports internationalization. You can set the
 preference (i.e. `GPTSTUDIO_LANGUAGE="es"` for spanish). See the full
 list of supported languages in the translation file
 (`"inst/translations/translation.json"`).
+
+#### Using Other Models
+
+We’re excited to announce that our service now includes models from
+HuggingFace’s inference API, Anthropic’s claude models, and Google’s
+MakerSuite, and Azure OpenAI service broadening the range of AI
+solutions you can use. You can set the model using the setting (gear)
+button in the ChatGPT addin app.
+
+<video src="https://user-images.githubusercontent.com/6314313/252512899-c45e4711-2197-4849-a5c1-4925355a1369.mov" data-canonical-src="https://user-images.githubusercontent.com/6314313/252512899-c45e4711-2197-4849-a5c1-4925355a1369.mov" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
+</video>
+
+#### Persistent User Settings & Custom Prompt
+
+You can now save your app settings across sessions. These are saved in a
+user config file. The easiest way to change these settings is the “Save
+as Default” button in the add-in app. This also allows you to specify
+your own custom prompt to pass to the model as instructions.
+
+<video src="https://user-images.githubusercontent.com/6314313/252512933-5965b70c-4d58-4b82-aa67-7e2baf10660c.mov" data-canonical-src="https://user-images.githubusercontent.com/6314313/252512933-5965b70c-4d58-4b82-aa67-7e2baf10660c.mov" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px">
+</video>
 
 ### Provide your own instructions in R, R Markdown, or Quarto files
 
@@ -171,6 +203,54 @@ src="https://raw.githubusercontent.com/MichelNivard/gptstudio/main/media/comment
 alt="add comments to code" />
 <figcaption aria-hidden="true">add comments to code</figcaption>
 </figure>
+
+## Azure OpenAI Service
+
+To configure gptstudio to work using Azure OpenAI service, you need to
+provide some configuration details in your .Renviron file. Specifically,
+gptstudio looks for five environment variables:
+
+- AZURE_OPENAI_TASK
+- AZURE_OPENAI_ENDPOINT
+- AZURE_OPENAI_DEPLOYMENT_NAME
+- AZURE_OPENAI_KEY
+- AZURE_OPENAI_API_VERSION
+
+Here’s how you can add these details to your .Renviron file:
+
+1.  Locate your .Renviron file with `usethis::edit_r_environ()`.
+2.  Add environment variable details: Add a new line for each variable
+    you need to set in the following format: VARIABLE_NAME=“YOUR_VALUE”.
+    Replace VARIABLE_NAME with the name of the environment variable and
+    YOUR_VALUE with the actual value that you want to set. For example,
+    to set the API key you would have a line like this:
+
+``` bash
+AZURE_OPENAI_KEY="your_actual_key_goes_here"
+```
+
+You need to do this for each of the environment variables expected by
+the function. Your .Renviron file should look something like this:
+
+``` bash
+AZURE_OPENAI_TASK="your_task_code"
+AZURE_OPENAI_ENDPOINT="your_endpoint_url"
+AZURE_OPENAI_DEPLOYMENT_NAME="your_deployment_name"
+AZURE_OPENAI_KEY="your_api_key"
+AZURE_OPENAI_API_VERSION="your_api_version"
+```
+
+3.  Save and Close .Renviron: After adding your environment variables,
+    save your .Renviron file and close it. You will need to restart your
+    R session to make sure the new environment variables are loaded
+    properly.
+
+Remember to replace your_task_code, your_endpoint_url,
+your_deployment_name, your_api_key, and your_api_version with your
+actual Azure OpenAI details. You can retrieve these details from your
+Azure OpenAI service account. For more information about Azure OpenAI
+configuration, refer to the [Microsoft quickstart
+guide](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/quickstart?tabs=command-line&pivots=rest-api).
 
 ## Code of Conduct
 

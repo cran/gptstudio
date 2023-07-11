@@ -6,7 +6,7 @@
 \usage{
 openai_create_chat_completion(
   prompt = "<|endoftext|>",
-  model = "gpt-3.5-turbo",
+  model = getOption("gptstudio.model"),
   openai_api_key = Sys.getenv("OPENAI_API_KEY"),
   task = "chat/completions"
 )

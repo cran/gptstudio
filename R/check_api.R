@@ -132,7 +132,7 @@ check_api <- function() {
 
 simple_api_check <- function(api_key = Sys.getenv("OPENAI_API_KEY")) {
   request_base(task = "models", token = api_key) %>%
-    httr2::req_error(is_error = \(resp) FALSE) %>%
+    httr2::req_error(is_error = function(resp) FALSE) %>%
     httr2::req_perform() %>%
     httr2::resp_status()
 }
@@ -194,5 +194,39 @@ obscure_key <- function(api_key) {
   }
 }
 
-ui_yeah_wrapper <- function(prompt) usethis::ui_yeah(prompt)
+# Based on ui_yeah function from usethis package.
+# Source: https://github.com/r-lib/usethis
+ui_yeah_wrapper <- function(x,
+                            yes = c("Yes", "Definitely", "For sure", "Yup",
+                                    "Yeah", "I agree", "Absolutely"),
+                            no = c("No way", "Not now", "Negative", "No",
+                                   "Nope", "Absolutely not"),
+                            n_yes = 1,
+                            n_no = 2,
+                            shuffle = TRUE,
+                            .envir = parent.frame()) {
+  x <- glue::glue_collapse(x, "\n")
+  x <- glue::glue(x, .envir = .envir)
+
+  if (!interactive()) {
+    cli_abort(c(
+      "!" = "User input required, but session is not interactive.",
+      "i" = glue::glue("Query: {x}")
+    ))
+  }
+
+  n_yes <- min(n_yes, length(yes))
+  n_no <- min(n_no, length(no))
+
+  qs <- c(sample(yes, n_yes), sample(no, n_no))
+
+  if (shuffle) {
+    qs <- sample(qs)
+  }
+
+  cli_inform(x)
+  out <- utils::menu(qs)
+  out != 0L && qs[[out]] %in% yes
+}
+
 readline_wrapper <- function(prompt) readline(prompt)
