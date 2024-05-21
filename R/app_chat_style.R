@@ -37,14 +37,21 @@ style_chat_message <- function(message,
   colors <- create_ide_matching_colors(message$role, ide_colors)
 
   icon_name <- switch(message$role,
-                      "user" = "fas fa-user",
-                      "assistant" = "fas fa-robot"
+    "user" = "fas fa-user",
+    "assistant" = "fas fa-robot"
   )
 
   position_class <- switch(message$role,
-                           "user" = "justify-content-end",
-                           "assistant" = "justify-content-start"
+    "user" = "justify-content-end",
+    "assistant" = "justify-content-start"
   )
+
+
+  if (!is.null(message$name) && message$name == "docs") {
+    message_content <- render_docs_message_content(message$content)
+  } else {
+    message_content <- shiny::markdown(message$content)
+  }
 
   htmltools::div(
     class = glue("row m-0 p-0 {position_class}"),
@@ -58,7 +65,7 @@ style_chat_message <- function(message,
       htmltools::tags$div(
         class = glue("{message$role}-message-wrapper"),
         htmltools::tagList(
-          shiny::markdown(message$content)
+          message_content
         )
       )
     )
@@ -94,6 +101,27 @@ create_ide_matching_colors <- function(role,
   )
 }
 
+render_docs_message_content <- function(x) {
+  docs_info <- x %>%
+    stringr::str_extract("gptstudio-metadata-docs-start.*gptstudio-metadata-docs-end") %>%
+    stringr::str_remove("gptstudio-metadata-docs-start-") %>%
+    stringr::str_remove("-gptstudio-metadata-docs-end") %>%
+    stringr::str_split_1(pattern = "-")
+
+  pkg_ref <- docs_info[1]
+  topic <- docs_info[2]
+
+  message_content <- x %>%
+    stringr::str_remove("gptstudio-metadata-docs-start.*gptstudio-metadata-docs-end") %>%
+    shiny::markdown()
+
+  message_content <- tags$div(
+    "R documentation:",
+    tags$code(glue::glue("{pkg_ref}::{topic}")) %>%
+      bslib::tooltip(message_content)
+  )
+}
+
 #' Custom textAreaInput
 #'
 #' Modified version of `textAreaInput()` that removes the label container.
@@ -104,7 +132,7 @@ create_ide_matching_colors <- function(role,
 #'
 #' @return A modified textAreaInput
 text_area_input_wrapper <-
-  function(inputId,
+  function(inputId, # nolint
            label,
            value = "",
            width = NULL,
@@ -147,11 +175,17 @@ text_area_input_wrapper <-
 #' @param role Author of the message. One of `c("user", "assistant")`
 #' @param content Content of the message. If it is from the user most probably
 #' comes from an interactive input.
+#' @param name Name for the author of the message. Currently used to support rendering of help pages
 #'
 #' @return list of chat messages
 #'
-chat_history_append <- function(history, role, content) {
-  c(history, list(
-    list(role = role, content = content)
-  ))
+chat_history_append <- function(history, role, content, name = NULL) {
+  new_message <- list(
+    role = role,
+    content = content,
+    name = name
+  ) %>%
+    purrr::compact()
+
+  c(history, list(new_message))
 }

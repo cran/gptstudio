@@ -7,12 +7,12 @@
 #' @inheritParams run_chatgpt_app
 #' @inheritParams welcomeMessage-shiny
 #' @inheritParams chat_message_default
-#' @param elementId The element's id
-welcomeMessage <- function(ide_colors = get_ide_theme_info(),
+#' @param element_id The element's id
+welcomeMessage <- function(ide_colors = get_ide_theme_info(), # nolint
                            translator = create_translator(),
                            width = NULL,
                            height = NULL,
-                           elementId = NULL) {
+                           element_id = NULL) {
   default_message <- chat_message_default(translator = translator)
 
   # forward options using x
@@ -27,7 +27,7 @@ welcomeMessage <- function(ide_colors = get_ide_theme_info(),
     width = width,
     height = height,
     package = "gptstudio",
-    elementId = elementId
+    elementId = element_id
   )
 }
 
@@ -47,12 +47,12 @@ welcomeMessage <- function(ide_colors = get_ide_theme_info(),
 #'
 #' @name welcomeMessage-shiny
 #'
-welcomeMessageOutput <- function(outputId, width = "100%", height = NULL) {
+welcomeMessageOutput <- function(outputId, width = "100%", height = NULL) { # nolint
   htmlwidgets::shinyWidgetOutput(outputId, "welcomeMessage", width, height, package = "gptstudio")
 }
 
 #' @rdname welcomeMessage-shiny
-renderWelcomeMessage <- function(expr, env = parent.frame(), quoted = FALSE) {
+renderWelcomeMessage <- function(expr, env = parent.frame(), quoted = FALSE) { # nolint
   if (!quoted) {
     expr <- substitute(expr)
   } # force quoted
@@ -97,25 +97,10 @@ chat_message_default <- function(translator = create_translator()) {
   ) %>%
     purrr::map_chr(~ translator$t(.x))
 
-  paperplane <- icon("fas fa-paper-plane") %>% as.character()
-  eraser <- icon("eraser")
-  gear <- icon("gear")
-
-  explain_btns <- c(
-    "In this chat you can:\n\n",
-    "- Send me a prompt ({paperplane} or Enter key)\n",
-    "- Clear the current chat history ({eraser})\n",
-    "- Change the settings ({gear})\n"
-  ) %>%
-    purrr::map_chr(~ translator$t(.x)) %>%
-    glue::glue_collapse() %>%
-    glue::glue()
-
   # nolint end
 
   content <- c(
     "{sample(welcome_messages, 1)}\n\n",
-    "{explain_btns}\n\n",
     translator$t("Type anything to start our conversation.")
   ) %>%
     glue::glue_collapse() %>%

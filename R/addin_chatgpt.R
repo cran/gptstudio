@@ -6,13 +6,13 @@
 #' @return This function has no return value.
 #'
 #' @inheritParams shiny::runApp
+#' @export
 #' @examples
 #' # Call the function as an RStudio addin
 #' \dontrun{
-#' addin_chatgpt()
+#' gptstudio_chat()
 #' }
-addin_chatgpt <- function(host = getOption("shiny.host", "127.0.0.1")) {
-  check_api()
+gptstudio_chat <- function(host = getOption("shiny.host", "127.0.0.1")) {
   rstudioapi::verifyAvailable()
   stopifnot(rstudioapi::hasFun("viewer"))
 
@@ -20,8 +20,6 @@ addin_chatgpt <- function(host = getOption("shiny.host", "127.0.0.1")) {
   app_dir <- create_tmp_app_dir()
 
   run_app_as_bg_job(appDir = app_dir, job_name = "gptstudio", host, port)
-
-  if (.Platform$OS.type == "unix") Sys.sleep(1.5)
 
   open_bg_shinyapp(host, port)
 }
@@ -49,7 +47,7 @@ random_port <- function() {
 #' @inheritParams shiny::runApp
 #' @return This function returns nothing because is meant to run an app as a
 #'   side effect.
-run_app_as_bg_job <- function(appDir = ".", job_name, host, port) {
+run_app_as_bg_job <- function(appDir = ".", job_name, host, port) { # nolint
   job_script <- create_tmp_job_script(
     appDir = appDir,
     port = port,
@@ -68,7 +66,7 @@ run_app_as_bg_job <- function(appDir = ".", job_name, host, port) {
 #' application from the specified directory with the specified port and host.
 #' @inheritParams shiny::runApp
 #' @return A string containing the path of a temporary job script
-create_tmp_job_script <- function(appDir, port, host) {
+create_tmp_job_script <- function(appDir, port, host) { # nolint
   script_file <- tempfile(fileext = ".R")
 
   line <-
@@ -152,5 +150,17 @@ open_bg_shinyapp <- function(host, port) {
     cli::cli_alert_info("Showing app in browser window")
   }
 
+  if (.Platform$OS.type == "unix") {
+    wait_for_bg_shinyapp(translated_url)
+  }
+
   rstudioapi::viewer(translated_url)
+}
+
+# This function makes a request for the app's url and fails
+# if doesn't find anything after 10 seconds
+wait_for_bg_shinyapp <- function(url) {
+  request(url) %>%
+    req_retry(max_seconds = 10, backoff = function(n) 0.2) %>%
+    req_perform()
 }

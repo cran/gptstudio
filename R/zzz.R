@@ -6,7 +6,8 @@
     config <- yaml::read_yaml(user_config)
   } else {
     config <- yaml::read_yaml(system.file("rstudio/config.yml",
-                                          package = "gptstudio"))
+      package = "gptstudio"
+    ))
   }
 
   op <- options()
@@ -23,7 +24,10 @@
     gptstudio.service       = config$service,
     gptstudio.model         = config$model,
     gptstudio.custom_prompt = config$custom_prompt,
-    gptstudio.stream        = config$stream
+    gptstudio.stream        = config$stream,
+    # options added after v3.0 will need a safe check because the user's
+    # config file might not have values for new features
+    gptstudio.read_docs     = config$read_docs %||% FALSE
   )
 
   toset <- !(names(op_gptstudio) %in% names(op))

@@ -5,7 +5,8 @@ save_user_config <- function(code_style,
                              service,
                              model,
                              custom_prompt,
-                             stream) {
+                             stream,
+                             read_docs) {
   if (is.null(custom_prompt)) custom_prompt <- ""
   config <-
     data.frame(
@@ -16,7 +17,8 @@ save_user_config <- function(code_style,
       service,
       model,
       custom_prompt,
-      stream
+      stream,
+      read_docs
     )
   user_config_path <- tools::R_user_dir("gptstudio", which = "config")
   user_config <- file.path(user_config_path, "config.yml")
@@ -28,8 +30,6 @@ save_user_config <- function(code_style,
 }
 
 set_user_options <- function(config) {
-  op <- options()
-
   op_gptstudio <- list(
     gptstudio.code_style    = config$code_style,
     gptstudio.skill         = config$skill,
@@ -38,7 +38,9 @@ set_user_options <- function(config) {
     gptstudio.service       = config$service,
     gptstudio.model         = config$model,
     gptstudio.custom_prompt = config$custom_prompt,
-    gptstudio.stream        = config$stream
+    gptstudio.stream        = config$stream,
+    # added in v.3.1+ dev version
+    gptstudio.read_docs     = config$read_docs
   )
   options(op_gptstudio)
   invisible()
